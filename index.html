@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>城市广场喷泉开放排程系统</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💧 城市广场喷泉开放排程系统</h1>
+            <p class="subtitle">选择您的角色进入系统</p>
+        </header>
+
+        <div class="role-selection">
+            <div class="role-card" onclick="location.href='admin.html'">
+                <div class="role-icon">👮</div>
+                <h2>城管人员</h2>
+                <p>维护喷泉开放时段，管理排程计划</p>
+                <button class="btn btn-primary">进入管理</button>
+            </div>
+
+            <div class="role-card" onclick="location.href='maintainer.html'">
+                <div class="role-icon">🔧</div>
+                <h2>维修员</h2>
+                <p>登记设备状态，记录维护信息</p>
+                <button class="btn btn-success">进入登记</button>
+            </div>
+
+            <div class="role-card" onclick="location.href='visitor.html'">
+                <div class="role-icon">🎪</div>
+                <h2>游客</h2>
+                <p>查看今日开放时间和喷泉状态</p>
+                <button class="btn btn-info">查看排程</button>
+            </div>
+        </div>
+
+        <div class="system-status">
+            <h3>系统状态</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <span class="status-label">设备状态：</span>
+                    <span id="deviceStatus" class="status-value">-</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">天气状况：</span>
+                    <span id="weatherStatus" class="status-value">-</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">当前风力：</span>
+                    <span id="windLevel" class="status-value">-</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">今日场次：</span>
+                    <span id="todaySessions" class="status-value">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSystemStatus();
+        });
+
+        function updateSystemStatus() {
+            const deviceStatus = document.getElementById('deviceStatus');
+            const weatherStatus = document.getElementById('weatherStatus');
+            const windLevel = document.getElementById('windLevel');
+            const todaySessions = document.getElementById('todaySessions');
+
+            const deviceState = FountainData.getDeviceState();
+            const weather = FountainData.getWeather();
+            const sessions = FountainData.getTodaySessions();
+
+            deviceStatus.textContent = deviceState.status === 'normal' ? '✅ 正常运行' : '⚠️ ' + deviceState.description;
+            deviceStatus.className = 'status-value ' + (deviceState.status === 'normal' ? 'status-normal' : 'status-warning');
+
+            weatherStatus.textContent = weather.isWindy ? '🌬️ 大风' : '☀️ ' + weather.description;
+            weatherStatus.className = 'status-value ' + (weather.isWindy ? 'status-warning' : 'status-normal');
+
+            windLevel.textContent = weather.windLevel + ' 级';
+            windLevel.className = 'status-value ' + (weather.isWindy ? 'status-warning' : 'status-normal');
+
+            const activeSessions = sessions.filter(s => s.status !== 'cancelled').length;
+            todaySessions.textContent = activeSessions + ' 场';
+            todaySessions.className = 'status-value status-normal';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>城管人员 - 喷泉排程管理</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>👮 城管人员 - 喷泉排程管理</h1>
+            <a href="index.html" class="back-link">← 返回首页</a>
+        </div>
+
+        <div class="section">
+            <div id="alertContainer"></div>
+
+            <div class="weather-control">
+                <label>🌬️ 当前风力等级：</label>
+                <input type="range" id="windLevel" min="0" max="12" value="3">
+                <span id="windLevelDisplay" style="font-weight: bold; min-width: 60px;">3 级</span>
+                <span id="windStatus" style="margin-left: 10px;"></span>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="tabs">
+                <button class="tab active" data-tab="today">今日排程</button>
+                <button class="tab" data-tab="future">未来排程</button>
+                <button class="tab" data-tab="add">新增排程</button>
+            </div>
+
+            <div class="tab-content active" id="today">
+                <div class="section-title">
+                    <span>今日开放时段</span>
+                    <span id="todayDate"></span>
+                </div>
+                <table class="table" id="todayTable">
+                    <thead>
+                        <tr>
+                            <th>开始时间</th>
+                            <th>结束时间</th>
+                            <th>状态</th>
+                            <th>取消原因</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todayTableBody"></tbody>
+                </table>
+                <div id="todayEmpty" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">📅</div>
+                    <div class="empty-state-text">今日暂无排程</div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="future">
+                <div class="section-title">
+                    <span>未来开放时段</span>
+                </div>
+                <table class="table" id="futureTable">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>开始时间</th>
+                            <th>结束时间</th>
+                            <th>状态</th>
+                            <th>取消原因</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="futureTableBody"></tbody>
+                </table>
+                <div id="futureEmpty" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">📆</div>
+                    <div class="empty-state-text">暂无未来排程</div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="add">
+                <div class="section-title">
+                    <span>新增开放时段</span>
+                </div>
+                <form id="addScheduleForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>开放日期</label>
+                            <input type="date" id="scheduleDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>开始时间</label>
+                            <input type="time" id="scheduleStartTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label>结束时间</label>
+                            <input type="time" id="scheduleEndTime" required>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button type="submit" class="btn btn-primary">添加排程</button>
+                        <button type="reset" class="btn btn-secondary">重置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span>系统状态</span>
+            </div>
+            <div class="status-grid">
+                <div class="status-item">
+                    <span class="status-label">设备状态：</span>
+                    <span id="deviceStatus" class="status-value">-</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">天气状况：</span>
+                    <span id="weatherStatus" class="status-value">-</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">可正常开放：</span>
+                    <span id="canOpen" class="status-value">-</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">最后更新：</span>
+                    <span id="lastUpdate" class="status-value">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>编辑排程</h3>
+                <button class="modal-close" onclick="closeEditModal()">×</button>
+            </div>
+            <form id="editScheduleForm">
+                <input type="hidden" id="editScheduleId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>开放日期</label>
+                        <input type="date" id="editScheduleDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>开始时间</label>
+                        <input type="time" id="editScheduleStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>结束时间</label>
+                        <input type="time" id="editScheduleEndTime" required>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

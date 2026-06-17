@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  fountain-schedule:
+    build: .
+    image: fountain-schedule:latest
+    container_name: fountain-schedule
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    networks:
+      - fountain-net
+
+networks:
+  fountain-net:
+    driver: bridge
