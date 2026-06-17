@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>城管人员 - 喷泉排程综合管理</title>
+    <title>城管人员 - 喷泉排程管理</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
         <div class="page-header">
-            <h1>👮 城管人员 - 喷泉排程综合管理</h1>
+            <h1>👮 城管人员 - 喷泉排程管理</h1>
             <a href="index.html" class="back-link">← 返回首页</a>
         </div>
 
@@ -17,85 +17,44 @@
             <div id="alertContainer"></div>
 
             <div class="weather-control">
-                <div style="flex: 1; min-width: 300px;">
-                    <label style="display: block; margin-bottom: 8px;">🌬️ 当前风力等级：</label>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <input type="range" id="windLevel" min="0" max="12" value="3" style="flex: 1;">
-                        <span id="windLevelDisplay" style="font-weight: bold; min-width: 60px;">3 级</span>
-                    </div>
-                </div>
-                <div style="min-width: 160px;">
-                    <label style="display: block; margin-bottom: 8px;">🌡️ 气温：</label>
-                    <input type="number" id="temperature" min="-10" max="45" value="25" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: white;">
-                </div>
-                <span id="windStatus" style="min-width: 140px; text-align: center; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.15);"></span>
-                <button class="btn btn-sm btn-warning" onclick="applyWeather()" style="min-width: 100px;">应用天气</button>
+                <label>🌬️ 当前风力等级：</label>
+                <input type="range" id="windLevel" min="0" max="12" value="3">
+                <span id="windLevelDisplay" style="font-weight: bold; min-width: 60px;">3 级</span>
+                <span id="windStatus" style="margin-left: 10px;"></span>
             </div>
+        </div>
 
-            <div class="energy-control">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <span style="font-weight: 500;">⚡ 能耗控制策略</span>
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                        <input type="checkbox" id="energyEnabled" checked> 启用节能控制
-                    </label>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">用电高峰时段节能比例</label>
-                        <select id="peakSavingPercent" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
-                            <option value="10">10%（轻度节能）</option>
-                            <option value="20" selected>20%（标准节能）</option>
-                            <option value="30">30%（深度节能）</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">高峰时段</label>
-                        <div style="padding: 8px; background: #fffbe6; border-radius: 6px; font-size: 13px; color: #ad8b00;">
-                            08:00-11:00 / 18:00-22:00
-                        </div>
-                    </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px; color: #666;">策略说明</label>
-                        <div id="energyNotice" style="padding: 8px; background: #f0f2ff; border-radius: 6px; font-size: 13px; color: #667eea;">
-                            用电高峰期间适度调整运行时间
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: flex-end;">
-                        <button class="btn btn-primary" onclick="saveEnergyPolicy()" style="width: 100%;">保存能耗设置</button>
-                    </div>
-                </div>
+        <div class="section" id="suggestionsSection">
+            <div class="section-title">
+                <span>💡 智能排程建议</span>
+                <span class="badge badge-info" id="suggestionCount">0 条建议</span>
             </div>
+            <div id="suggestionsList"></div>
         </div>
 
         <div class="section">
             <div class="tabs">
                 <button class="tab active" data-tab="today">今日排程</button>
                 <button class="tab" data-tab="future">未来排程</button>
-                <button class="tab" data-tab="festivals">🎊 节庆管理</button>
-                <button class="tab" data-tab="events">📅 临时活动</button>
-                <button class="tab" data-tab="suggestions">💡 智能建议</button>
+                <button class="tab" data-tab="festivals">节庆活动</button>
+                <button class="tab" data-tab="events">临时活动</button>
+                <button class="tab" data-tab="energy">能耗控制</button>
                 <button class="tab" data-tab="add">新增排程</button>
             </div>
 
             <div class="tab-content active" id="today">
                 <div class="section-title">
-                    <span>今日开放时段 <span class="sub-label" id="todayDateTag"></span></span>
-                    <span class="summary-chips">
-                        <span class="chip chip-success">计划 <b id="chipScheduled">0</b></span>
-                        <span class="chip chip-danger">取消 <b id="chipCancelled">0</b></span>
-                        <span class="chip chip-warning">进行中 <b id="chipOngoing">0</b></span>
-                        <span class="chip chip-info">已结束 <b id="chipEnded">0</b></span>
-                    </span>
+                    <span>今日开放时段</span>
+                    <span id="todayDate"></span>
                 </div>
                 <table class="table" id="todayTable">
                     <thead>
                         <tr>
-                            <th>时段</th>
-                            <th>原始时段</th>
+                            <th>原定时间</th>
+                            <th>调整后时间</th>
                             <th>状态</th>
-                            <th>调整/异常原因</th>
-                            <th>游客提示</th>
-                            <th>关联活动</th>
+                            <th>调整/取消原因</th>
+                            <th>异常备注</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -115,11 +74,10 @@
                     <thead>
                         <tr>
                             <th>日期</th>
-                            <th>时段</th>
-                            <th>原始时段</th>
+                            <th>原定时间</th>
+                            <th>调整后时间</th>
                             <th>状态</th>
-                            <th>调整原因</th>
-                            <th>关联活动</th>
+                            <th>调整/取消原因</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -133,42 +91,39 @@
 
             <div class="tab-content" id="festivals">
                 <div class="section-title">
-                    <span>🎊 节庆/节假日管理</span>
+                    <span>🎊 节庆活动管理</span>
                     <button class="btn btn-sm btn-primary" onclick="openFestivalModal()">+ 新增节庆</button>
                 </div>
-                <div id="festivalsSummary" style="margin-bottom: 15px; padding: 12px; background: #fff7e6; border-radius: 8px; font-size: 14px;"></div>
                 <table class="table" id="festivalsTable">
                     <thead>
                         <tr>
                             <th>节庆名称</th>
-                            <th>起止日期</th>
+                            <th>日期</th>
                             <th>人流等级</th>
-                            <th>是否节假日</th>
-                            <th>备注</th>
+                            <th>说明</th>
                             <th>操作</th>
                         </tr>
                     </thead>
                     <tbody id="festivalsTableBody"></tbody>
                 </table>
                 <div id="festivalsEmpty" class="empty-state" style="display: none;">
-                    <div class="empty-state-icon">🎊</div>
-                    <div class="empty-state-text">暂无节庆记录</div>
+                    <div class="empty-state-icon">🎉</div>
+                    <div class="empty-state-text">暂无节庆活动</div>
                 </div>
             </div>
 
             <div class="tab-content" id="events">
                 <div class="section-title">
-                    <span>📅 临时活动管理</span>
-                    <button class="btn btn-sm btn-primary" onclick="openEventModal()">+ 新增临时活动</button>
+                    <span>🎪 临时活动管理</span>
+                    <button class="btn btn-sm btn-primary" onclick="openEventModal()">+ 新增活动</button>
                 </div>
                 <table class="table" id="eventsTable">
                     <thead>
                         <tr>
                             <th>活动名称</th>
                             <th>日期</th>
-                            <th>类型</th>
-                            <th>自动调整</th>
-                            <th>影响场次</th>
+                            <th>时间</th>
+                            <th>预计人流</th>
                             <th>说明</th>
                             <th>操作</th>
                         </tr>
@@ -176,17 +131,40 @@
                     <tbody id="eventsTableBody"></tbody>
                 </table>
                 <div id="eventsEmpty" class="empty-state" style="display: none;">
-                    <div class="empty-state-icon">📅</div>
+                    <div class="empty-state-icon">🎈</div>
                     <div class="empty-state-text">暂无临时活动</div>
                 </div>
             </div>
 
-            <div class="tab-content" id="suggestions">
+            <div class="tab-content" id="energy">
                 <div class="section-title">
-                    <span>💡 智能排程建议</span>
-                    <button class="btn btn-sm btn-info" onclick="refreshSuggestions()">刷新建议</button>
+                    <span>⚡ 能耗控制设置</span>
                 </div>
-                <div id="suggestionList"></div>
+                <form id="energyConfigForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>节能模式</label>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <label class="switch">
+                                    <input type="checkbox" id="energySavingMode">
+                                    <span class="slider"></span>
+                                </label>
+                                <span id="energySavingStatus" style="color: #666;">未开启</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>功率限制 (%)</label>
+                            <input type="number" id="powerLimit" min="10" max="100" value="100">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>高峰时段（用逗号分隔，如 12:00-14:00,18:00-20:00）</label>
+                        <input type="text" id="peakHours" placeholder="12:00-14:00,18:00-20:00">
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button type="submit" class="btn btn-primary">保存设置</button>
+                    </div>
+                </form>
             </div>
 
             <div class="tab-content" id="add">
@@ -208,18 +186,6 @@
                             <input type="time" id="scheduleEndTime" required>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>关联临时活动（可选）</label>
-                            <select id="scheduleLinkedEvent">
-                                <option value="">无</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>游客提示（可选）</label>
-                            <input type="text" id="scheduleVisitorNotice" placeholder="面向游客显示的提示信息">
-                        </div>
-                    </div>
                     <div style="margin-top: 15px;">
                         <button type="submit" class="btn btn-primary">添加排程</button>
                         <button type="reset" class="btn btn-secondary">重置</button>
@@ -230,7 +196,26 @@
 
         <div class="section">
             <div class="section-title">
-                <span>系统状态概览</span>
+                <span>📢 游客公告管理</span>
+            </div>
+            <form id="noticeForm">
+                <div class="form-group">
+                    <label>主要公告</label>
+                    <textarea id="mainNotice" rows="2" placeholder="显示在游客页面顶部的重要公告"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>安全提示</label>
+                    <textarea id="safetyTips" rows="3" placeholder="显示在游客须知区域的安全提示"></textarea>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">保存公告</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span>📊 系统状态</span>
             </div>
             <div class="status-grid">
                 <div class="status-item">
@@ -242,16 +227,16 @@
                     <span id="weatherStatus" class="status-value">-</span>
                 </div>
                 <div class="status-item">
-                    <span class="status-label">今日人流：</span>
-                    <span id="crowdLevel" class="status-value">-</span>
+                    <span class="status-label">今日场次：</span>
+                    <span id="sessionStats" class="status-value">-</span>
                 </div>
                 <div class="status-item">
                     <span class="status-label">可正常开放：</span>
                     <span id="canOpen" class="status-value">-</span>
                 </div>
                 <div class="status-item">
-                    <span class="status-label">能耗模式：</span>
-                    <span id="energyMode" class="status-value">-</span>
+                    <span class="status-label">节庆活动：</span>
+                    <span id="festivalStatus" class="status-value">-</span>
                 </div>
                 <div class="status-item">
                     <span class="status-label">最后更新：</span>
@@ -283,16 +268,6 @@
                         <input type="time" id="editScheduleEndTime" required>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>游客提示</label>
-                        <input type="text" id="editScheduleVisitorNotice" placeholder="面向游客显示的提示信息">
-                    </div>
-                    <div class="form-group">
-                        <label>调整原因（手动调整时必填）</label>
-                        <input type="text" id="editScheduleAdjustReason" placeholder="说明调整原因">
-                    </div>
-                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeEditModal()">取消</button>
                     <button type="submit" class="btn btn-primary">保存</button>
@@ -301,37 +276,41 @@
         </div>
     </div>
 
-    <div id="abnormalModal" class="modal-overlay" style="display: none;">
+    <div id="adjustModal" class="modal-overlay" style="display: none;">
         <div class="modal">
             <div class="modal-header">
-                <h3>补录异常原因</h3>
-                <button class="modal-close" onclick="closeAbnormalModal()">×</button>
+                <h3>调整开放时间</h3>
+                <button class="modal-close" onclick="closeAdjustModal()">×</button>
             </div>
-            <form id="abnormalForm">
-                <input type="hidden" id="abnormalScheduleId">
+            <form id="adjustForm">
+                <input type="hidden" id="adjustScheduleId">
                 <div class="form-group">
-                    <label>场次信息</label>
-                    <div id="abnormalSessionInfo" style="padding: 10px; background: #f8f9fa; border-radius: 6px;"></div>
+                    <label>调整类型</label>
+                    <select id="adjustType" required>
+                        <option value="delay_open">⏰ 延后开放（推迟30分钟）</option>
+                        <option value="advance_open">⏰ 提前开放（提前30分钟）</option>
+                        <option value="early_close">⏹️ 提前结束（提前30分钟）</option>
+                        <option value="extend_open">➕ 延长开放（延长30分钟）</option>
+                        <option value="reset">↩️ 恢复原定时间</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>异常原因 <span style="color: #dc3545;">*</span></label>
-                    <select id="abnormalType" required>
-                        <option value="">请选择异常类型</option>
-                        <option value="设备故障">设备故障</option>
-                        <option value="天气异常">天气异常（雷雨/大风等）</option>
-                        <option value="人流过载">人流过载临时关闭</option>
-                        <option value="安全检查">临时安全检查</option>
-                        <option value="上级指令">上级临时指令</option>
-                        <option value="其他">其他原因</option>
+                    <label>调整原因</label>
+                    <select id="adjustReason" required>
+                        <option value="天气原因">天气原因</option>
+                        <option value="人流管控">人流管控</option>
+                        <option value="临时活动">临时活动</option>
+                        <option value="设备原因">设备原因</option>
+                        <option value="其他">其他</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>详细说明</label>
-                    <textarea id="abnormalDetail" rows="3" placeholder="请详细说明异常情况和处理过程"></textarea>
+                    <textarea id="adjustDescription" rows="3" placeholder="请输入详细说明"></textarea>
                 </div>
                 <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeAbnormalModal()">取消</button>
-                    <button type="submit" class="btn btn-primary">保存异常记录</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAdjustModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">确认调整</button>
                 </div>
             </form>
         </div>
@@ -340,45 +319,32 @@
     <div id="festivalModal" class="modal-overlay" style="display: none;">
         <div class="modal">
             <div class="modal-header">
-                <h3>节庆/节假日信息</h3>
+                <h3 id="festivalModalTitle">新增节庆活动</h3>
                 <button class="modal-close" onclick="closeFestivalModal()">×</button>
             </div>
             <form id="festivalForm">
                 <input type="hidden" id="festivalId">
+                <div class="form-group">
+                    <label>节庆名称</label>
+                    <input type="text" id="festivalName" placeholder="如：国庆节" required>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>节庆名称</label>
-                        <input type="text" id="festivalName" required placeholder="如：春节、国庆节">
+                        <label>日期</label>
+                        <input type="date" id="festivalDate" required>
                     </div>
                     <div class="form-group">
                         <label>人流等级</label>
-                        <select id="festivalCrowdLevel" required>
-                            <option value="normal">正常</option>
-                            <option value="high">较高</option>
-                            <option value="very_high">极高</option>
+                        <select id="festivalCrowdLevel">
+                            <option value="low">低</option>
+                            <option value="medium">中</option>
+                            <option value="high">高</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>开始日期</label>
-                        <input type="date" id="festivalStartDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label>结束日期</label>
-                        <input type="date" id="festivalEndDate" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 6px;">
-                            <input type="checkbox" id="festivalIsHoliday" checked> 法定节假日（自动延时开放）
-                        </label>
-                    </div>
-                </div>
                 <div class="form-group">
-                    <label>备注说明</label>
-                    <textarea id="festivalNote" rows="2" placeholder="节庆特点、客流预估等"></textarea>
+                    <label>活动说明</label>
+                    <textarea id="festivalDescription" rows="3" placeholder="请输入节庆活动说明"></textarea>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeFestivalModal()">取消</button>
@@ -389,59 +355,44 @@
     </div>
 
     <div id="eventModal" class="modal-overlay" style="display: none;">
-        <div class="modal" style="max-width: 650px;">
+        <div class="modal">
             <div class="modal-header">
-                <h3>临时活动信息</h3>
+                <h3 id="eventModalTitle">新增临时活动</h3>
                 <button class="modal-close" onclick="closeEventModal()">×</button>
             </div>
             <form id="eventForm">
                 <input type="hidden" id="eventId">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>活动名称</label>
-                        <input type="text" id="eventName" required placeholder="如：广场音乐演出">
-                    </div>
-                    <div class="form-group">
-                        <label>活动类型</label>
-                        <select id="eventType" required>
-                            <option value="performance">文艺演出</option>
-                            <option value="celebration">庆典活动</option>
-                            <option value="promotion">商业推广</option>
-                            <option value="government">政务活动</option>
-                            <option value="emergency">应急处置</option>
-                            <option value="other">其他</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label>活动名称</label>
+                    <input type="text" id="eventName" placeholder="如：音乐节" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>活动日期</label>
+                        <label>日期</label>
                         <input type="date" id="eventDate" required>
                     </div>
                     <div class="form-group">
-                        <label>自动调整方式</label>
-                        <select id="eventAdjustType">
-                            <option value="none">不自动调整（手动处理）</option>
-                            <option value="delay">延时开放</option>
-                            <option value="advance">提前结束</option>
-                            <option value="cancel">取消场次</option>
+                        <label>预计人流</label>
+                        <select id="eventCrowdLevel">
+                            <option value="low">少</option>
+                            <option value="medium">中</option>
+                            <option value="high">多</option>
                         </select>
                     </div>
                 </div>
-                <div id="adjustMinutesGroup" class="form-row" style="display: none;">
+                <div class="form-row">
                     <div class="form-group">
-                        <label>调整分钟数</label>
-                        <input type="number" id="eventAdjustMinutes" value="30" min="5" max="120">
+                        <label>开始时间</label>
+                        <input type="time" id="eventStartTime">
+                    </div>
+                    <div class="form-group">
+                        <label>结束时间</label>
+                        <input type="time" id="eventEndTime">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>影响场次（按住Ctrl多选，不选则默认影响当日全部）</label>
-                    <select id="eventScheduleIds" multiple size="5" style="min-height: 100px;">
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>活动说明 / 游客提示</label>
-                    <textarea id="eventNotice" rows="2" placeholder="会同步显示在游客端的提示信息"></textarea>
+                    <label>活动说明</label>
+                    <textarea id="eventDescription" rows="3" placeholder="请输入活动说明"></textarea>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeEventModal()">取消</button>

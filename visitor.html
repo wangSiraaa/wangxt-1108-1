@@ -9,40 +9,61 @@
 <body>
     <div class="container">
         <div class="page-header">
-            <h1>🎪 城市广场喷泉 - 今日开放时间</h1>
+            <h1>🎪 城市广场喷泉</h1>
             <a href="index.html" class="back-link">← 返回首页</a>
+        </div>
+
+        <div class="hero-status-card" id="heroStatusCard">
+            <div class="hero-status-icon" id="heroStatusIcon">💧</div>
+            <div class="hero-status-info">
+                <div class="hero-status-title" id="heroStatusTitle">正常开放</div>
+                <div class="hero-status-subtitle" id="heroStatusSubtitle">今日喷泉按计划开放</div>
+            </div>
+            <div class="hero-status-time">
+                <div class="hero-time-label">当前时间</div>
+                <div class="hero-time-value" id="currentTimeHero">--:--:--</div>
+            </div>
+        </div>
+
+        <div id="alertBanners"></div>
+
+        <div class="quick-stats">
+            <div class="quick-stat-item">
+                <div class="quick-stat-icon">🎬</div>
+                <div class="quick-stat-content">
+                    <div class="quick-stat-value" id="todayTotal">0</div>
+                    <div class="quick-stat-label">今日场次</div>
+                </div>
+            </div>
+            <div class="quick-stat-item">
+                <div class="quick-stat-icon">🟢</div>
+                <div class="quick-stat-content">
+                    <div class="quick-stat-value" id="activeCount">0</div>
+                    <div class="quick-stat-label">正常开放</div>
+                </div>
+            </div>
+            <div class="quick-stat-item">
+                <div class="quick-stat-icon">⏸️</div>
+                <div class="quick-stat-content">
+                    <div class="quick-stat-value" id="cancelledCount">0</div>
+                    <div class="quick-stat-label">临时取消</div>
+                </div>
+            </div>
+            <div class="quick-stat-item">
+                <div class="quick-stat-icon">✅</div>
+                <div class="quick-stat-content">
+                    <div class="quick-stat-value" id="completedCount">0</div>
+                    <div class="quick-stat-label">已结束</div>
+                </div>
+            </div>
         </div>
 
         <div class="section">
             <div class="section-title">
                 <span>📅 今日：<span id="todayDate"></span></span>
-                <span id="currentTime" style="font-weight: normal; color: #666;"></span>
             </div>
 
-            <div id="statusAlerts"></div>
-
-            <div class="status-grid" style="margin-bottom: 20px;">
-                <div class="status-item">
-                    <span class="status-label">💧 喷泉状态：</span>
-                    <span id="fountainStatus" class="status-value">-</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">🔧 设备状态：</span>
-                    <span id="deviceStatus" class="status-value">-</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">🌤️ 天气：</span>
-                    <span id="weatherStatus" class="status-value">-</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">💨 风力：</span>
-                    <span id="windLevel" class="status-value">-</span>
-                </div>
-            </div>
-
-            <h3 style="margin-bottom: 20px; color: #333;">🎬 今日开放场次</h3>
-
-            <div class="visitor-timeline" id="timeline"></div>
+            <div class="schedule-timeline" id="scheduleTimeline"></div>
 
             <div id="emptyState" class="empty-state" style="display: none;">
                 <div class="empty-state-icon">💤</div>
@@ -52,17 +73,69 @@
 
         <div class="section">
             <div class="section-title">
-                <span>📋 开放须知</span>
+                <span>📋 现场信息</span>
             </div>
-            <div style="line-height: 1.8; color: #555;">
-                <p>1. 喷泉开放期间请注意安全，请勿靠近喷泉区域。</p>
-                <p>2. 如遇大风、雷雨等恶劣天气，喷泉将自动停止开放。</p>
-                <p>3. 设备维护期间，喷泉暂停开放，敬请谅解。</p>
-                <p>4. 如遇特殊情况，开放时间可能临时调整，请以现场公告为准。</p>
-                <p style="margin-top: 15px; color: #999; font-size: 14px;">
-                    数据更新时间：<span id="lastUpdate"></span>
-                    <button onclick="refreshData()" class="btn btn-sm btn-secondary" style="margin-left: 10px;">手动刷新</button>
-                </p>
+            <div class="info-grid">
+                <div class="info-card info-card-blue">
+                    <div class="info-card-icon">🌤️</div>
+                    <div class="info-card-content">
+                        <div class="info-card-title">天气状况</div>
+                        <div class="info-card-value" id="weatherInfo">--</div>
+                        <div class="info-card-desc" id="windInfo">风力 -- 级</div>
+                    </div>
+                </div>
+                <div class="info-card info-card-green">
+                    <div class="info-card-icon">🔧</div>
+                    <div class="info-card-content">
+                        <div class="info-card-title">设备状态</div>
+                        <div class="info-card-value" id="deviceInfo">--</div>
+                        <div class="info-card-desc" id="deviceDesc">运行正常</div>
+                    </div>
+                </div>
+                <div class="info-card info-card-purple">
+                    <div class="info-card-icon">🎉</div>
+                    <div class="info-card-content">
+                        <div class="info-card-title">节庆活动</div>
+                        <div class="info-card-value" id="festivalInfo">--</div>
+                        <div class="info-card-desc" id="festivalDesc">暂无活动</div>
+                    </div>
+                </div>
+                <div class="info-card info-card-orange">
+                    <div class="info-card-icon">📢</div>
+                    <div class="info-card-content">
+                        <div class="info-card-title">游客提示</div>
+                        <div class="info-card-value" id="noticeInfo">--</div>
+                        <div class="info-card-desc" id="noticeDesc">请遵守秩序</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span>💡 开放须知</span>
+            </div>
+            <div class="tips-list">
+                <div class="tip-item">
+                    <span class="tip-icon">⚠️</span>
+                    <span class="tip-text">喷泉开放期间请注意安全，请勿靠近喷泉区域</span>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">🌧️</span>
+                    <span class="tip-text">如遇大风、雷雨等恶劣天气，喷泉将自动停止开放</span>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">🔧</span>
+                    <span class="tip-text">设备维护期间，喷泉暂停开放，敬请谅解</span>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">📱</span>
+                    <span class="tip-text">如遇特殊情况，开放时间可能临时调整，请以现场公告为准</span>
+                </div>
+            </div>
+            <div style="margin-top: 15px; color: #999; font-size: 14px; text-align: center;">
+                数据更新时间：<span id="lastUpdate"></span>
+                <button onclick="refreshData()" class="btn btn-sm btn-secondary" style="margin-left: 10px;">手动刷新</button>
             </div>
         </div>
     </div>

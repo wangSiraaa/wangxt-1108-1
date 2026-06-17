@@ -21,7 +21,28 @@
             </div>
             <div id="currentDeviceState" style="font-size: 18px; margin-bottom: 20px;"></div>
 
-            <div class="section-title">
+            <div class="info-card" id="publicNoticeCard">
+                <div class="info-card-header">
+                    <span class="info-card-icon">📢</span>
+                    <span class="info-card-title">公示信息</span>
+                </div>
+                <div class="info-card-body">
+                    <div class="info-row">
+                        <span class="info-label">对外公示：</span>
+                        <span id="publicNoticeText" class="info-value">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">游客提示：</span>
+                        <span id="visitorTipText" class="info-value">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">同步状态：</span>
+                        <span id="syncStatus" class="badge badge-success">已同步</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">
                 <span>状态变更登记</span>
             </div>
             <form id="deviceStateForm">
@@ -43,10 +64,46 @@
                     <label>状态说明</label>
                     <textarea id="description" rows="3" placeholder="请输入详细说明（如故障原因、维护内容等）" required></textarea>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>公示信息（自动生成，可修改）</label>
+                        <input type="text" id="publicNotice" placeholder="对外公示的状态说明">
+                    </div>
+                    <div class="form-group">
+                        <label>游客提示（自动生成，可修改）</label>
+                        <input type="text" id="visitorTip" placeholder="给游客的提示信息">
+                    </div>
+                </div>
                 <div style="margin-top: 15px;">
                     <button type="submit" class="btn btn-primary">提交状态变更</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetNoticeFields()" style="margin-left: 10px;">重置公示信息</button>
                 </div>
             </form>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span>今日已结束场次</span>
+                <span class="section-subtitle">已结束场次不可修改时间，可补录异常原因</span>
+            </div>
+            <div id="endedSessionsStats" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;"></div>
+            <table class="table" id="endedSessionsTable">
+                <thead>
+                    <tr>
+                        <th>原定时间</th>
+                        <th>实际时间</th>
+                        <th>状态</th>
+                        <th>调整/取消原因</th>
+                        <th>异常备注</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="endedSessionsBody"></tbody>
+            </table>
+            <div id="endedSessionsEmpty" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">⏰</div>
+                <div class="empty-state-text">暂无已结束场次</div>
+            </div>
         </div>
 
         <div class="section">
@@ -89,10 +146,46 @@
                     <span id="cancelledCount" class="status-value">-</span>
                 </div>
                 <div class="status-item">
+                    <span class="status-label">已结束场次：</span>
+                    <span id="endedCount" class="status-value">-</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">节庆活动：</span>
+                    <span id="festivalStatus" class="status-value">-</span>
+                </div>
+                <div class="status-item">
                     <span class="status-label">最后更新：</span>
                     <span id="lastUpdate" class="status-value">-</span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="abnormalModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>补录异常原因</h3>
+                <button class="modal-close" onclick="closeAbnormalModal()">&times;</button>
+            </div>
+            <form id="abnormalForm">
+                <input type="hidden" id="abnormalSessionId">
+                <div class="form-group">
+                    <label>场次时间</label>
+                    <div id="abnormalSessionTime" style="padding: 10px; background: #f8f9fa; border-radius: 8px; color: #666;"></div>
+                </div>
+                <div class="form-group">
+                    <label>异常原因 <span style="color: #dc3545;">*</span></label>
+                    <textarea id="abnormalReason" rows="4" placeholder="请输入异常原因，如设备故障、天气突变、临时活动等" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>操作员</label>
+                    <input type="text" id="abnormalOperator" placeholder="请输入操作员姓名">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAbnormalModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
         </div>
     </div>
 
