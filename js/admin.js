@@ -9,7 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializePage() {
-    document.getElementById('todayDate').textContent = new Date().toLocaleDateString('zh-CN');
+    const todayStr = new Date().toLocaleDateString('zh-CN');
+    document.getElementById('todayDate').textContent = todayStr;
+    document.getElementById('todayDateTag').textContent = todayStr;
 
     const today = FountainData.formatDate(new Date());
     document.getElementById('scheduleDate').min = today;
@@ -614,7 +616,7 @@ function renderScheduleRow(schedule, isToday) {
     const statusBadge = getStatusBadge(schedule);
     const canModify = FountainData.canModifySchedule(schedule);
     const isEnded = FountainData.isSessionEnded(schedule);
-    const isOngoing = FountainData.isSessionOngoing(s);
+    const isOngoing = FountainData.isSessionOngoing(schedule);
     const hasAdjust = schedule.adjustType && schedule.startTime !== schedule.originalStartTime;
 
     const originalTime = `${schedule.originalStartTime} - ${schedule.originalEndTime}`;
@@ -694,6 +696,9 @@ function getStatusBadge(schedule) {
 
 function renderSystemStatus() {
     const status = FountainData.getPublicStatus();
+
+    document.getElementById('todayDateTag').textContent = new Date().toLocaleDateString('zh-CN');
+    document.getElementById('todayDateTag').className = 'status-value status-normal';
 
     document.getElementById('deviceStatus').textContent =
         status.deviceState.status === 'normal' ? '✅ 正常运行' : '⚠️ ' + status.deviceState.description;
